@@ -3,6 +3,8 @@
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
 from class_vis import prettyPicture
+from time import time
+from sklearn.ensemble import RandomForestClassifier
 
 features_train, labels_train, features_test, labels_test = makeTerrainData()
 
@@ -24,19 +26,27 @@ plt.scatter(grade_slow, bumpy_slow, color = "r", label="slow")
 plt.legend()
 plt.xlabel("bumpiness")
 plt.ylabel("grade")
-plt.show()
+#plt.show()
 ################################################################################
 
 
-### your code here!  name your classifier object clf if you want the 
+### your code here!  name your classifier object clf if you want the
 ### visualization code (prettyPicture) to show you the decision boundary
 
+rf_classifier = RandomForestClassifier(n_estimators = 30, min_samples_split = 20)
 
+tic = time()
+rf_classifier.fit(features_train, labels_train)
+toc = time()
+print "training time:", round(toc - tic, 3), "s"
 
+tic = time()
+predictions = rf_classifier.predict(features_test)
+toc = time()
+print "testing time:", round(toc - tic, 3), "s"
 
-
-
-
+rf_accuracy = rf_classifier.score(features_test, labels_test)
+print "Random Forest Accuracy =", rf_accuracy
 
 try:
     prettyPicture(clf, features_test, labels_test)
